@@ -1,0 +1,207 @@
+version: "1.0"
+
+name: "hetzner update-firewall"
+description: "This will update the given hetzner instance's firewall"
+usage: |
+  mici hetzner update-firewall --action <action>
+
+configuration:
+  confirm: false
+  environment:
+    HETZNER_WORKSPACE_FIREWALL_ID: "${HETZNER_WORKSPACE_FIREWALL_ID}"
+    HETZNER_WORKSPACE_RW_API_TOKEN: "${HETZNER_WORKSPACE_RW_API_TOKEN}"
+    HETZNER_GAMES_FIREWALL_ID: "${HETZNER_GAMES_FIREWALL_ID}"
+    HETZNER_GAMES_RW_API_TOKEN: "${HETZNER_GAMES_RW_API_TOKEN}"
+  working_directory: null
+
+inputs:
+  server:
+    type: choice
+    description: "Server to update on hetzner"
+    required: true
+    short: -s
+    long: --server
+    options:
+      - games
+      - workspace
+  action:
+    type: choice
+    description: "Action to run on hetzner firewall"
+    required: true
+    short: -a
+    long: --action
+    options:
+      - enable
+      - disable
+      - clear
+    default: enable
+  allow-any-http:
+    type: boolean
+    description: "Allow 0.0.0.0/0 on hetzner firewall"
+    default: $false
+  deny-any-http:
+    type: boolean
+    description: "Deny 0.0.0.0/0 on hetzner firewall"
+    default: $false
+
+steps:
+  - id: "update-hetzner-firewall"
+    name: "Update hetzner firewall for specified server"
+    run:
+      shell: "pwsh"
+      working_directory: null
+      command: |
+        [string]$Action = "@{inputs.action}"
+        [string]$Server = "@{inputs.server}"
+        [bool]$AllowAnyHttp = @{inputs.allow-any-http}
+        [bool]$DenyAnyHttp = @{inputs.deny-any-http}
+
+        if ([string]::IsNullOrEmpty($Server)) {
+            Write-Host "Error: Server variable is null or empty"
+            Write-Host "       Please call the command with '--server <server>'"
+            Write-Host ""
+            exit 1
+        }
+
+        switch ($Server) {
+            "workspace" {
+                $firewallId = $env:HETZNER_WORKSPACE_FIREWALL_ID
+                $apiToken = $env:HETZNER_WORKSPACE_RW_API_TOKEN
+            }
+            "games" {
+                $firewallId = $env:HETZNER_GAMES_FIREWALL_ID
+                $apiToken = $env:HETZNER_GAMES_RW_API_TOKEN
+            }
+            default {
+                Write-Host "Error: $Server isn't an allowed value for --server"
+                Write-Host "       Allowed choices are:"
+                Write-Host "          - workspace"
+                Write-Host "          - games"
+                Write-Host ""
+
+                exit 1
+            }
+        }
+
+        if ($AllowAnyHttp -and $DenyAnyHttp) {
+            Write-Host "Error: -AllowAnyHttp and -DenyAnyHttp cannot be used together."
+            Write-Host ""
+
+            exit 1
+        }
+
+        if ($AllowAnyHttp -and $DenyAnyHttp) {
+            Write-Host "Error: -AllowAnyHttp and -DenyAnyHttp cannot be used together."
+            Write-Host ""
+
+            exit 1
+        }
+
+        $currentPublicIp = Invoke-RestMethod -Uri "https://checkip.amazonaws.com/"
+        $currentPublicIp = $currentPublicIp -replace "`n|`r", ""
+
+        $apiUrl = "https://api.hetzner.cloud/v1/firewalls/$firewallId"
+        $apiSetRulesUrl = "$apiUrl/actions/set_rules"
+
+        if (-not $firewallId) {
+            Write-Host "Error: HETZNER_FIREWALL_ID environment variable is not set."
+            Write-Host ""
+
+            exit 1
+        }
+
+        if (-not $apiToken) {
+            Write-Host "Error: HETZNER_RW_API_TOKEN environment variable is not set."
+            Write-Host ""
+
+            exit 1
+        }
+
+        $headers = @{
+            "Authorization" = "Bearer $apiToken"
+            "Content-Type"  = "application/json"
+        }
+
+        $rules = @()
+        $existingRulesResponse = Invoke-RestMethod -Uri $apiUrl -Method Get -Headers $headers
+        $existingRules = $existingRulesResponse.firewall.rules
+        $ipExists = $existingRules | Where-Object { $_.source_ips -contains "$currentPublicIp/32" }
+
+        if ($Action -eq "Enable") {
+            if (-not $ipExists) {
+                $rules = @(
+                    @{
+                        "description" = "Allow all TCP from my desktop"
+                        "direction"   = "in"
+                        "port"        = "any"
+                        "protocol"    = "tcp"
+                        "source_ips"  = @(
+                            "$currentPublicIp/32"
+                        )
+                    },
+                    @{
+                        "description" = "Allow all UDP from my desktop"
+                        "direction"   = "in"
+                        "port"        = "any"
+                        "protocol"    = "udp"
+                        "source_ips"  = @(
+                            "$currentPublicIp/32"
+                        )
+                    }
+                )
+            }
+
+            if ($AllowAnyHttp) {
+                $ruleAnyHttp = @(
+                    @{
+                        "description" = "Allow all HTTP from my any IPv4"
+                        "direction"   = "in"
+                        "port"        = "80"
+                        "protocol"    = "tcp"
+                        "source_ips"  = @(
+                            "0.0.0.0/0"
+                        )
+                    },
+                    @{
+                        "description" = "Allow all HTTPS from my any IPv4"
+                        "direction"   = "in"
+                        "port"        = "443"
+                        "protocol"    = "tcp"
+                        "source_ips"  = @(
+                            "0.0.0.0/0"
+                        )
+                    }
+                )
+
+                foreach ($rule in $ruleAnyHttp) {
+                    $rules += $rule
+                }
+            }
+
+            foreach ($rule in $existingRules) {
+                $rules += $rule
+            }
+
+            if ($DenyAnyHttp) {
+                $rules = @($rules | Where-Object { $_.source_ips -notcontains "0.0.0.0/0" }) ?? @()
+            }
+        }
+        elseif ($Action -eq "Disable") {
+            # Remove only the current IP instead of clearing all rules
+            $rules = @($existingRules | Where-Object { $_.source_ips -notcontains "$currentPublicIp/32" }) ?? @()
+
+            if ($DenyAnyHttp) {
+                $rules = @($rules | Where-Object { $_.source_ips -notcontains "0.0.0.0/0" }) ?? @()
+            }
+        }
+        elseif ($Action -eq "Clear") {
+            $rules = @()
+        }
+
+        $body = @{
+            "rules" = $rules
+        }
+
+        $jsonData = $body | ConvertTo-Json -Depth 10
+        $response = Invoke-RestMethod -Uri $apiSetRulesUrl -Method Post -Headers $headers -Body $jsonData
+        $response
