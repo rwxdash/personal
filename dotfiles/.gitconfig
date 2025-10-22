@@ -1,0 +1,25 @@
+[user]
+    name = Oguzhan Ozdemir
+    email = aoozdemir@live.com
+    signingkey = <GPG-KEY>
+[commit]
+    gpgsign = true
+[core]
+    editor = vim
+[url "git@github.com:"]
+    insteadOf = https://github.com/
+[pull]
+    rebase = false
+[init]
+    defaultBranch = master
+[alias]
+    co      = commit
+    ch      = checkout
+    sw      = switch
+    d       = diff
+    l       = log
+    p       = push
+    rv      = remote -v
+    s       = status -sb
+[diff]
+    relative = true
