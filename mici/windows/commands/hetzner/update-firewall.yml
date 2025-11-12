@@ -3,7 +3,7 @@ version: "1.0"
 name: "hetzner update-firewall"
 description: "This will update the given hetzner instance's firewall"
 usage: |
-  mici hetzner update-firewall --action <action>
+  mici hetzner update-firewall --action <action> --server <server>
 
 configuration:
   confirm: false
