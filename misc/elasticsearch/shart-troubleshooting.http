@@ -1,0 +1,60 @@
+GET /_tasks
+GET /_tasks?detailed=true&actions=*reindex
+GET /_nodes/<NODE_NAME>/hot_threads
+
+GET /_cat/nodes?v&h=name,roles,node.role&s=name:asc
+GET /_cat/allocation?v&h=node,shards,disk.indices,disk.used,disk.avail&s=node
+GET /_cat/nodes?v&h=name,roles,master,data,disk.used_percent
+GET /_nodes/sigmadb05/stats
+GET /_cat/nodes?v=true
+GET /_cluster/health
+
+POST /_tasks/<TASK_ID>/_cancel
+
+POST _cache/clear
+
+GET _cat/thread_pool/write?v&h=id,name,active,rejected,queue,size
+
+GET _cat/shards?v=true&h=index,shard,prirep,state,node,unassigned.reason,dataset&s=state:asc
+
+GET _cat/allocation?pretty&v=true&h=shards,disk.indices,disk.used,disk.avail,disk.total,ip,node,node.role&s=node
+
+POST /_cluster/reroute?retry_failed&metric=none
+
+
+GET <INDEX_NAME>
+DELETE /<INDEX_NAME>
+
+GET _cluster/allocation/explain
+{
+  "index": "<INDEX_NAME>",
+  "shard": 0,
+  "primary": true
+}
+
+POST /_cluster/reroute
+{
+  "commands": [
+    {
+      "allocate_stale_primary": {
+        "index": "<INDEX_NAME>",
+        "shard": 0,
+        "node": "<NODE_NAME>",
+        "accept_data_loss": true
+      }
+    }
+  ]
+}
+
+POST /_cluster/reroute?metric=none
+{
+  "commands": [
+    {
+      "allocate_replica": {
+        "index": "<INDEX_NAME>",
+        "shard": 0,
+        "node": "<NODE_NAME>"
+      }
+    }
+  ]
+}
