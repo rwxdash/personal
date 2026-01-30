@@ -68,3 +68,7 @@ set expandtab
 colorscheme evening
 set termguicolors
 set cursorline
+set number
+set relativenumber
+highlight LineNr ctermfg=grey guifg=#808080
+highlight CursorLineNr ctermfg=yellow guifg=#D7AF00
