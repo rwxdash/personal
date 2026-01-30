@@ -120,20 +120,25 @@ export EDITOR="vim"
 unsetopt autocd
 
 . "$HOME/.cargo/env"
+. "$HOME/.local/bin/env"
+
+#export NVM_DIR="$HOME/.nvm"
+#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+#[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+eval "$(fnm env --use-on-cd)"
+
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init - zsh)"
 
 export GPG_TTY=$(tty)
 export PATH=$PATH:/usr/local/go/bin
+export HOMEBREW_NO_AUTO_UPDATE=1
 
 # Terminal Shortcuts
 ## Enable CTRL+Backspace to delete the previous word
-bindkey '^H' backward-kill-word
+# bindkey '^H' backward-kill-word
 ## Enable CTRL+Delete to delete the next word (make sure terminal sends the right escape code)
-bindkey '\e[3;5~' kill-word
-
-# NVM
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# bindkey '\e[3;5~' kill-word
 
 # Aliases
 alias rc="source ~/.zshrc"
@@ -159,5 +164,3 @@ for file in $CONFIG_FILES; do
     fi
 done
 export KUBECONFIG
-
-. "$HOME/.local/bin/env"
