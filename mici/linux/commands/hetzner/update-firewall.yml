@@ -1,0 +1,140 @@
+version: "1.0"
+
+name: "hetzner update-firewall (bash)"
+description: "This will update the given hetzner instance's firewall using bash"
+usage: |
+  mici hetzner update-firewall --action <action> --server <server>
+
+configuration:
+  confirm: false
+  environment:
+    HETZNER_WORKSPACE_FIREWALL_ID: "${HETZNER_WORKSPACE_FIREWALL_ID}"
+    HETZNER_WORKSPACE_RW_API_TOKEN: "${HETZNER_WORKSPACE_RW_API_TOKEN}"
+    HETZNER_GAMES_FIREWALL_ID: "${HETZNER_GAMES_FIREWALL_ID}"
+    HETZNER_GAMES_RW_API_TOKEN: "${HETZNER_GAMES_RW_API_TOKEN}"
+  working_directory: null
+
+inputs:
+  server:
+    type: choice
+    description: "Server to update on hetzner"
+    required: true
+    short: -s
+    long: --server
+    options:
+      - games
+      - workspace
+  action:
+    type: choice
+    description: "Action to run on hetzner firewall"
+    required: true
+    short: -a
+    long: --action
+    options:
+      - enable
+      - disable
+      - clear
+    default: enable
+  allow-any-http:
+    type: boolean
+    description: "Allow 0.0.0.0/0 on hetzner firewall"
+    default: false
+  deny-any-http:
+    type: boolean
+    description: "Deny 0.0.0.0/0 on hetzner firewall"
+    default: false
+
+steps:
+  - id: "update-hetzner-firewall-bash"
+    name: "Update hetzner firewall for specified server"
+    run:
+      shell: "bash"
+      command: |
+        set -e
+
+        # Map Inputs
+        ACTION="@{inputs.action}"
+        SERVER="@{inputs.server}"
+        ALLOW_ANY_HTTP="@{inputs.allow-any-http}"
+        DENY_ANY_HTTP="@{inputs.deny-any-http}"
+
+        # 1. Validate Server and set Env Vars
+        case "$SERVER" in
+          "workspace")
+            FIREWALL_ID="$HETZNER_WORKSPACE_FIREWALL_ID"
+            API_TOKEN="$HETZNER_WORKSPACE_RW_API_TOKEN"
+            ;;
+          "games")
+            FIREWALL_ID="$HETZNER_GAMES_FIREWALL_ID"
+            API_TOKEN="$HETZNER_GAMES_RW_API_TOKEN"
+            ;;
+          *)
+            echo "Error: Invalid server '$SERVER'. Use 'workspace' or 'games'."
+            exit 1
+            ;;
+        esac
+
+        if [[ "$ALLOW_ANY_HTTP" == "true" && "$DENY_ANY_HTTP" == "true" ]]; then
+            echo "Error: --allow-any-http and --deny-any-http cannot be used together."
+            exit 1
+        fi
+
+        # 2. Check Prerequisites
+        if [[ -z "$FIREWALL_ID" || -z "$API_TOKEN" ]]; then
+            echo "Error: Required environment variables for $SERVER are not set."
+            exit 1
+        fi
+
+        # 3. Get Current Public IP
+        CURRENT_IP=$(curl -s https://checkip.amazonaws.com/ | tr -d '\n\r')
+        IP_CIDR="${CURRENT_IP}/32"
+
+        # 4. Fetch Existing Rules
+        API_URL="https://api.hetzner.cloud/v1/firewalls/$FIREWALL_ID"
+        RESPONSE=$(curl -s -H "Authorization: Bearer $API_TOKEN" "$API_URL")
+
+        # Extract existing rules using jq
+        RULES=$(echo "$RESPONSE" | jq -c '.firewall.rules')
+
+        # 5. Logic for Actions
+        if [[ "$ACTION" == "enable" ]]; then
+            # Check if current IP is already allowed
+            IP_EXISTS=$(echo "$RULES" | jq --arg ip "$IP_CIDR" 'any(.[].source_ips[]; . == $ip)')
+
+            if [[ "$IP_EXISTS" == "false" ]]; then
+                NEW_RULES=$(jq -n --arg ip "$IP_CIDR" '[
+                    {description: "Allow all TCP from my desktop", direction: "in", port: "any", protocol: "tcp", source_ips: [$ip]},
+                    {description: "Allow all UDP from my desktop", direction: "in", port: "any", protocol: "udp", source_ips: [$ip]}
+                ]')
+                RULES=$(echo "$RULES" | jq -c ". + $NEW_RULES")
+            fi
+
+            if [[ "$ALLOW_ANY_HTTP" == "true" ]]; then
+                HTTP_RULES=$(jq -n '[
+                    {description: "Allow all HTTP from my any IPv4", direction: "in", port: "80", protocol: "tcp", source_ips: ["0.0.0.0/0"]},
+                    {description: "Allow all HTTPS from my any IPv4", direction: "in", port: "443", protocol: "tcp", source_ips: ["0.0.0.0/0"]}
+                ]')
+                RULES=$(echo "$RULES" | jq -c ". + $HTTP_RULES")
+            fi
+
+        elif [[ "$ACTION" == "disable" ]]; then
+            # Filter out rules containing current IP
+            RULES=$(echo "$RULES" | jq -c --arg ip "$IP_CIDR" 'map(select(.source_ips | contains([$ip]) | not))')
+
+        elif [[ "$ACTION" == "clear" ]]; then
+            RULES="[]"
+        fi
+
+        # 6. Global Deny Filter
+        if [[ "$DENY_ANY_HTTP" == "true" ]]; then
+            RULES=$(echo "$RULES" | jq -c 'map(select(.source_ips | contains(["0.0.0.0/0"]) | not))')
+        fi
+
+        # 7. Apply Rules
+        echo "Updating firewall $FIREWALL_ID with new rules..."
+        PAYLOAD=$(jq -n --argjson rules "$RULES" '{rules: $rules}')
+
+        curl -s -X POST "$API_URL/actions/set_rules" \
+            -H "Authorization: Bearer $API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" | jq .
