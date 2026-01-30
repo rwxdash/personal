@@ -6,6 +6,7 @@
     gpgsign = true
 [core]
     editor = vim
+    excludesfile = /Users/oz/.gitignore_global
 [url "git@github.com:"]
     insteadOf = https://github.com/
 [pull]
