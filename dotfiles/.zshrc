@@ -1,16 +1,18 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
-# Start SSH agent if not already running
-if ! pgrep -u "$USER" ssh-agent > /dev/null; then
-    eval "$(ssh-agent -s)" > /dev/null
-else
-    export SSH_AUTH_SOCK=$(find /tmp/ -maxdepth 2 -type s -name 'agent.*' -user "$USER" 2>/dev/null | head -n 1)
-    export SSH_AGENT_PID=$(pgrep -u "$USER" ssh-agent | head -n 1)
-fi
+# Only run this agent logic on Linux
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    export SSH_AUTH_SOCK="$HOME/.ssh/ssh-agent.sock"
 
-# Add SSH key to the agent
-ssh-add ~/.ssh/git
+    if [ ! -S "$SSH_AUTH_SOCK" ]; then
+        eval "$(ssh-agent -a "$SSH_AUTH_SOCK")" > /dev/null
+    fi
+
+    if ! ssh-add -l > /dev/null 2>&1; then
+        ssh-add ~/.ssh/git
+    fi
+fi
 
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
