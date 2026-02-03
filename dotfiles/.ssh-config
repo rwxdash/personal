@@ -1,0 +1,12 @@
+Host *
+    ServerAliveInterval 120
+    ServerAliveCountMax 5
+    ExitOnForwardFailure yes
+    ControlMaster auto
+    ControlPath ~/.ssh/control-%C
+    ControlPersist 10m
+
+Host github.com
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/git
