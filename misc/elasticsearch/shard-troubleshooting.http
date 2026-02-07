@@ -5,7 +5,7 @@ GET /_nodes/<NODE_NAME>/hot_threads
 GET /_cat/nodes?v&h=name,roles,node.role&s=name:asc
 GET /_cat/allocation?v&h=node,shards,disk.indices,disk.used,disk.avail&s=node
 GET /_cat/nodes?v&h=name,roles,master,data,disk.used_percent
-GET /_nodes/sigmadb05/stats
+GET /_nodes/<NODE_NAME>/stats
 GET /_cat/nodes?v=true
 GET /_cluster/health
 
