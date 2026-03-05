@@ -5,10 +5,19 @@
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     export SSH_AUTH_SOCK="$HOME/.ssh/ssh-agent.sock"
 
-    if [ ! -S "$SSH_AUTH_SOCK" ]; then
+    # Check if the agent is actively responding
+    ssh-add -l >/dev/null 2>&1
+    AGENT_STATUS=$?
+
+    # Exit code 2 means "Error connecting to agent"
+    if [ $AGENT_STATUS -eq 2 ]; then
+        # The socket is stale or missing. Remove the dead file and start a new agent.
+        rm -f "$SSH_AUTH_SOCK"
         eval "$(ssh-agent -a "$SSH_AUTH_SOCK")" > /dev/null
     fi
 
+    # Now that we know the agent is alive, check if keys need to be added.
+    # 'ssh-add -l' returns 1 if it connects but no keys are loaded.
     if ! ssh-add -l > /dev/null 2>&1; then
         ssh-add ~/.ssh/git
     fi
