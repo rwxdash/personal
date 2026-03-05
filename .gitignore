@@ -1,1 +1,10 @@
 /tmp
+
+# Build artifacts
+*.o
+*.out
+
+# Clangd
+.cache
+.clangd
+compile_commands.json
