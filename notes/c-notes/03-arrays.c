@@ -9,8 +9,13 @@
 //
 // Build: make 03-arrays
 
+#include <stddef.h>
 #include <stdio.h>
 #include <string.h> // memset, memcpy
+
+// For exercises
+int    sum(int *arr, int len);
+size_t sizeof_infunc(int *arr);
 
 int main(void)
 {
@@ -48,7 +53,7 @@ int main(void)
     printf("sizeof(p)    = %zu (just a pointer: 8 bytes)\n", sizeof(p));
 
     // arr[i] is literally *(arr + i)
-    printf("nums[2] = %d, *(nums+2) = %d\n", nums[2], *(nums + 2));
+    printf("nums[2]      = %d, *(nums+2) = %d\n", nums[2], *(nums + 2));
 
     // ── Multi-dimensional arrays ──
     // This is what BPF args look like: char args[10][128]
@@ -61,14 +66,14 @@ int main(void)
 
     printf("\n2D array:\n");
     for (int i = 0; i < 3; i++)
-        printf("  names[%d] = \"%s\"\n", i, names[i]);
+        printf("  names[%d]    = \"%s\"\n", i, names[i]);
 
     // Total size = 3 * 16 = 48 bytes, all contiguous
     printf("sizeof(names) = %zu\n", sizeof(names));
 
     // Accessing individual characters
-    printf("names[1][0] = '%c'\n", names[1][0]); // 'w'
-    printf("names[1][1] = '%c'\n", names[1][1]); // 'o'
+    printf("names[1][0]   = '%c'\n", names[1][0]); // 'w'
+    printf("names[1][1]   = '%c'\n", names[1][1]); // 'o'
 
     // ── memcpy — the C way to copy data ──
     int src[3] = {100, 200, 300};
@@ -88,6 +93,18 @@ int main(void)
     // All contiguous. Row-major order (C convention).
     // This matters for BPF because we do: args[i] to get a pointer to row i
 
+    /*
+    The mental model is: the pointer type tells C how to interpret the memory, not what the memory actually is. The same
+    1,280 bytes could be:
+
+    char *s           = (char *) buf;           // "I want to read strings"
+    unsigned char *b  = (unsigned char *) buf;  // "I want to read raw bytes"
+    uint32_t *words   = (uint32_t *) buf;       // "I want to read 4-byte ints"
+    void *generic     = buf;                    // "I just want to pass this around"
+
+    The memory doesn't change — only how you read it changes.
+    */
+
     printf("\nMemory layout of names (first 48 bytes):\n");
     unsigned char *raw = (unsigned char *) names;
     for (int i = 0; i < 48; i++) {
@@ -105,5 +122,44 @@ int main(void)
     //    Why can't you use sizeof inside the function to get the length?
     // 4. What happens if you memcpy more bytes than the destination holds? Try it.
 
+    char args[5][64] = {"ls", "-la", "/tmp"};
+    // for (int i = 0; i < 3; i++)
+    //     printf("  names[%d]    = \"%s\"\n", i, names[i]);
+    printf("\n");
+    for (int i = 0; i < 3; i++) {
+        printf("args[%d]          = \"%s\"\n", i, args[i]);
+    }
+    printf("sizeof in main   = %zu\n", sizeof(args));
+    printf("sizeof in sum    = %zu\n", sizeof_infunc(args));
+
+    // small is on the stack and memcpy just bulldozed past
+    // its 4-byte boundary into whatever memory comes after it.
+    printf("memcpy:\n");
+    char big[16]  = "I'm safe";
+    char small[4] = "ok";
+    printf("  small before   = %s\n", small);
+
+    memcpy(small, "this is too long", 17);  // 16 chars + \0
+    printf("  small after    = %s\n", small);
+    printf("  big            = %s\n", big); // corrupted!
+
     return 0;
+}
+
+size_t sizeof_infunc(int *arr)
+{
+    return sizeof(arr);
+}
+
+int sum(int *arr, int len)
+{
+    printf("sizeof in func: %zu\n", sizeof(arr));
+
+    int total = 0;
+
+    for (int i = 0; i < len; i++) {
+        total += arr[i];
+    }
+
+    return total;
 }
