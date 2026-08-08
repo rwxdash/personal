@@ -7,3 +7,12 @@
 .cache
 .clangd
 compile_commands.json
+
+## Algos
+# Rust build artifacts (one standalone crate per problem)
+target/
+Cargo.lock
+
+# Python
+__pycache__/
+*.pyc
