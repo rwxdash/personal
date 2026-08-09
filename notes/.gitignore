@@ -8,8 +8,9 @@
 .clangd
 compile_commands.json
 
-## Algos
-# Rust build artifacts (one standalone crate per problem)
+## dsas
+# Rust build artifacts. The problem crates form one Cargo workspace
+# rooted at dsas/Cargo.toml, so there is a single shared target/ dir.
 target/
 Cargo.lock
 

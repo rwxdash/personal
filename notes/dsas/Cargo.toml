@@ -1,0 +1,24 @@
+# Virtual workspace tying together every problem's Rust crate.
+#
+# Its only job is to give rust-analyzer a single project to load. Without it,
+# each problem is an isolated crate and the editor has nothing to anchor to —
+# it searches the folder you opened, finds no Cargo.toml, and gives up.
+#
+# The glob means new problems are picked up automatically. Generate a problem,
+# reload the editor, done — no config to update.
+#
+# Everyday commands are unchanged: `cargo test` inside a problem's rust/
+# directory still builds and tests just that crate. From here, `cargo test`
+# runs every problem's tests at once.
+
+[workspace]
+resolver = "2"
+members = ["problems/*/*/rust"]
+
+# Profiles only take effect at the workspace root, so they live here rather
+# than in the member crates. opt-level = 1 keeps the large test inputs
+# (200k elements and up) fast enough to be worth running, while still
+# compiling quickly and keeping debug assertions such as arithmetic overflow
+# checks switched on.
+[profile.test]
+opt-level = 1

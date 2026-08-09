@@ -1,0 +1,8 @@
+{
+  // Official extensions only.
+  "recommendations": [
+    "rust-lang.rust-analyzer",
+    "tamasfe.even-better-toml",
+    "ms-python.python"
+  ]
+}
