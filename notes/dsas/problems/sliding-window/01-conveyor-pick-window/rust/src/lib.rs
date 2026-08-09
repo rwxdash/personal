@@ -1,9 +1,7 @@
 //! Conveyor Pick Window
 //! problems/sliding-window/01-conveyor-pick-window
 //!
-//! Fill in `shortest_fulfilling_run`, then run:
-//!
-//!     cargo test
+//! Fill in `shortest_fulfilling_run`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 

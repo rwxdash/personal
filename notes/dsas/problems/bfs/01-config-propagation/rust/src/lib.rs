@@ -1,9 +1,7 @@
 //! Config Propagation
 //! problems/bfs/01-config-propagation
 //!
-//! Fill in `propagation_rounds`, then run:
-//!
-//!     cargo test
+//! Fill in `propagation_rounds`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 

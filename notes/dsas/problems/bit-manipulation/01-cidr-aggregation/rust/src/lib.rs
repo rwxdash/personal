@@ -1,9 +1,7 @@
 //! CIDR Aggregation
 //! problems/bit-manipulation/01-cidr-aggregation
 //!
-//! Fill in `smallest_cidr`, then run:
-//!
-//!     cargo test
+//! Fill in `smallest_cidr`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 

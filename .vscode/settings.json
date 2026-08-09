@@ -7,14 +7,12 @@
   // automatically — this path never needs to change.
   "rust-analyzer.linkedProjects": ["notes/dsas/Cargo.toml"],
 
-  // Check the whole workspace on save rather than only the open file, so an
-  // error in one problem's crate does not hide behind another.
-  "rust-analyzer.check.workspace": true,
+  // Check only the crate you have open, not all 20. Unsolved problems have
+  // `todo!()` bodies, which compile fine but leave every parameter unused —
+  // about 70 warnings from problems you are not working on. The crates are
+  // independent, so there is nothing to gain from checking them together.
+  "rust-analyzer.check.workspace": false,
   "rust-analyzer.check.command": "clippy",
-
-  // The problem crates are stubs until you fill them in. Without this, every
-  // unimplemented function shows as dead code the moment you open it.
-  "rust-analyzer.diagnostics.disabled": ["inactive-code"],
 
   "[rust]": {
     "editor.defaultFormatter": "rust-lang.rust-analyzer",

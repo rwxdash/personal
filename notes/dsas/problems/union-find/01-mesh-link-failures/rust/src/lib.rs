@@ -1,9 +1,7 @@
 //! Mesh Link Failures
 //! problems/union-find/01-mesh-link-failures
 //!
-//! Fill in `partitions_after_failures`, then run:
-//!
-//!     cargo test
+//! Fill in `partitions_after_failures`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 

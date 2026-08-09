@@ -1,9 +1,7 @@
 //! Route Prefix Match
 //! problems/tries/01-route-prefix-match
 //!
-//! Fill in `longest_route_match`, then run:
-//!
-//!     cargo test
+//! Fill in `longest_route_match`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 

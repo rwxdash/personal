@@ -1,9 +1,7 @@
 //! Host Consolidation
 //! problems/two-pointers/01-host-consolidation
 //!
-//! Fill in `min_hosts`, then run:
-//!
-//!     cargo test
+//! Fill in `min_hosts`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 

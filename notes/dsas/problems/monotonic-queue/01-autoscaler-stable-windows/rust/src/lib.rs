@@ -1,9 +1,7 @@
 //! Autoscaler Stable Windows
 //! problems/monotonic-queue/01-autoscaler-stable-windows
 //!
-//! Fill in `count_stable_windows`, then run:
-//!
-//!     cargo test
+//! Fill in `count_stable_windows`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 

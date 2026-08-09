@@ -1,9 +1,7 @@
 //! Audit Sampling
 //! problems/dp-on-trees/01-audit-sampling
 //!
-//! Fill in `max_audit_evidence`, then run:
-//!
-//!     cargo test
+//! Fill in `max_audit_evidence`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 

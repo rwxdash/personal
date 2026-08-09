@@ -1,9 +1,7 @@
 //! Sharded Audit Log
 //! problems/heaps-k-way-merge/01-sharded-audit-log
 //!
-//! Fill in `nth_merged_event`, then run:
-//!
-//!     cargo test
+//! Fill in `nth_merged_event`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 

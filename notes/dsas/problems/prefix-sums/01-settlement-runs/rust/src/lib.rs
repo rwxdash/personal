@@ -1,9 +1,7 @@
 //! Settlement Runs
 //! problems/prefix-sums/01-settlement-runs
 //!
-//! Fill in `settlement_runs`, then run:
-//!
-//!     cargo test
+//! Fill in `settlement_runs`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 

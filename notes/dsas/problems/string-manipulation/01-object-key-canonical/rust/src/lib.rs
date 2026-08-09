@@ -1,9 +1,7 @@
 //! Object Key Canonicalisation
 //! problems/string-manipulation/01-object-key-canonical
 //!
-//! Fill in `canonical_key`, then run:
-//!
-//!     cargo test
+//! Fill in `canonical_key`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 
@@ -136,7 +134,11 @@ mod tests {
         assert_eq!(canonical_key("a.."), s("a.."));
         assert_eq!(canonical_key("a..b"), s("a..b"));
         assert_eq!(canonical_key(".hidden"), s(".hidden"));
-        assert_eq!(canonical_key(".../.."), s(""), "... is a name, so .. cancels it");
+        assert_eq!(
+            canonical_key(".../.."),
+            s(""),
+            "... is a name, so .. cancels it"
+        );
         assert_eq!(canonical_key(".../../.."), None);
         assert_eq!(canonical_key("a/.../b"), s("a/.../b"));
         assert_eq!(canonical_key("a/..../.."), s("a"));

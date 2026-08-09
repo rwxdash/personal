@@ -1,9 +1,7 @@
 //! Maintenance Windows
 //! problems/dp-1d/01-maintenance-windows
 //!
-//! Fill in `max_maintenance_value`, then run:
-//!
-//!     cargo test
+//! Fill in `max_maintenance_value`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 

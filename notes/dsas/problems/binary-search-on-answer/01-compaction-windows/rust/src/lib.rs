@@ -1,9 +1,7 @@
 //! Compaction Windows
 //! problems/binary-search-on-answer/01-compaction-windows
 //!
-//! Fill in `min_window_bytes`, then run:
-//!
-//!     cargo test
+//! Fill in `min_window_bytes`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 

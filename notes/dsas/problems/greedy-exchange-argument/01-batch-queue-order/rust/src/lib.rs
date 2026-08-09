@@ -1,9 +1,7 @@
 //! Batch Queue Order
 //! problems/greedy-exchange-argument/01-batch-queue-order
 //!
-//! Fill in `min_total_cost`, then run:
-//!
-//!     cargo test
+//! Fill in `min_total_cost`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 

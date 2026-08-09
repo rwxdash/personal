@@ -1,9 +1,7 @@
 //! Byte-Budget Cache
 //! problems/lru-lfu-design/01-byte-budget-cache
 //!
-//! Fill in `cache_simulate`, then run:
-//!
-//!     cargo test
+//! Fill in `cache_simulate`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 

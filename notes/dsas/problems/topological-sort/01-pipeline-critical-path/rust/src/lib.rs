@@ -1,9 +1,7 @@
 //! Pipeline Critical Path
 //! problems/topological-sort/01-pipeline-critical-path
 //!
-//! Fill in `pipeline_makespan`, then run:
-//!
-//!     cargo test
+//! Fill in `pipeline_makespan`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 

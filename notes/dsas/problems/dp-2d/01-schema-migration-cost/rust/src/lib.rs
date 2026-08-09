@@ -1,9 +1,7 @@
 //! Schema Migration Cost
 //! problems/dp-2d/01-schema-migration-cost
 //!
-//! Fill in `migration_cost`, then run:
-//!
-//!     cargo test
+//! Fill in `migration_cost`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 

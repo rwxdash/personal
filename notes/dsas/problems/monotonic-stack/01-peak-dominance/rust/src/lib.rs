@@ -1,9 +1,7 @@
 //! Peak Dominance
 //! problems/monotonic-stack/01-peak-dominance
 //!
-//! Fill in `dominance_spans`, then run:
-//!
-//!     cargo test
+//! Fill in `dominance_spans`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 

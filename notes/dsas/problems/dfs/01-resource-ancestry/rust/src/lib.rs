@@ -1,9 +1,7 @@
 //! Resource Ancestry
 //! problems/dfs/01-resource-ancestry
 //!
-//! Fill in `ancestor_queries`, then run:
-//!
-//!     cargo test
+//! Fill in `ancestor_queries`, then run `cargo test` in this directory.
 //!
 //! Statement: ../../PROBLEM.md   Stuck? ../../HINTS.md
 
