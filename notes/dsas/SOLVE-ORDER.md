@@ -1,6 +1,6 @@
 # Recommended Solve Order — Medium tier
 
-20 problems, one per pattern. This is the order to work them in on a **first
+21 problems across 20 patterns. This is the order to work them in on a **first
 pass**, grouped so that related tools sit next to each other and you can feel
 the contrasts between them.
 
@@ -36,6 +36,7 @@ the code, run the tests.
 | --- | --- | --- |
 | 1 | [object-key-canonical](problems/string-manipulation/01-object-key-canonical/PROBLEM.md) | Reading a spec precisely. No algorithm to discover — every case is stated, and the difficulty is handling all of them. Start here because every later problem needs this habit. |
 | 2 | [cidr-aggregation](problems/bit-manipulation/01-cidr-aggregation/PROBLEM.md) | One idea (XOR to find where two numbers diverge), a handful of lines. |
+| 2b | [extent-cover](problems/bit-manipulation/01b-extent-cover/PROBLEM.md) | **Optional second rep.** Same rung as #2 and the inverse operation — #2 rounds a range outward to one block, this fills a range inward with many. Take it if #2 needed hints; skip it if it did not. |
 | 3 | [conveyor-pick-window](problems/sliding-window/01-conveyor-pick-window/PROBLEM.md) | The most classic shape in the whole set. Two pointers over a contiguous range with running state. |
 
 ## Phase 2 — Array techniques (4 problems, ~35 min each)
@@ -102,10 +103,13 @@ Pick a random order, or sort `PROGRESS.md` by the ones that took longest.
 
 ## When you want more repetition
 
-There is currently one problem per pattern. If a pattern does not stick after
-one attempt, that is normal — the fix is more problems at the *same* rung, not
-harder ones. Ask for extra Mediums on the patterns you want to drill, and they
-will be filed as `02`, `03`, … within that pattern.
+Most patterns have one problem. If a pattern does not stick after one attempt,
+that is normal — the fix is more problems at the *same* rung, not harder ones.
+Ask for extra Mediums on the patterns you want to drill.
+
+They are filed as **letter siblings** of the rung they belong to: the second
+Medium for `bit-manipulation` is `01b-extent-cover`, not `02`. That keeps `02`
+free to mean Hard, so the ladder still reads top to bottom.
 
 The Hard and Advanced rungs are deliberately still empty. They are worth
 generating once you have attempted most of this tier, so they can target

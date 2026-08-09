@@ -61,6 +61,7 @@ tree.
 | [string-manipulation/01-object-key-canonical](problems/string-manipulation/01-object-key-canonical/PROBLEM.md) | String manipulation | Medium | Object key canonicalisation |  |
 | [greedy-exchange-argument/01-batch-queue-order](problems/greedy-exchange-argument/01-batch-queue-order/PROBLEM.md) | Greedy + exchange argument | Medium | Batch job queue ordering |  |
 | [bit-manipulation/01-cidr-aggregation](problems/bit-manipulation/01-cidr-aggregation/PROBLEM.md) | Bit manipulation | Medium | Firewall CIDR aggregation |  |
+| [bit-manipulation/01b-extent-cover](problems/bit-manipulation/01b-extent-cover/PROBLEM.md) | Bit manipulation | Medium | Object store aligned extents |  |
 | [lru-lfu-design/01-byte-budget-cache](problems/lru-lfu-design/01-byte-budget-cache/PROBLEM.md) | LRU cache design | Medium | Object store response cache |  |
 
 ## Coverage matrix
@@ -79,8 +80,12 @@ Rungs follow the numbering convention: `01` is the easiest Medium of a pattern,
 and difficulty increases from there. Three rungs per pattern is the target
 ladder, not a hard cap — a pattern that deserves a fourth gets `04`.
 
-**Filled: 20 / 72 slots (28%).** By rung: `01` **20/20 — the Medium tier is complete**, `02` 0/26, `03` 0/26.
-By difficulty label: Medium 17, Medium–Hard 3, Hard 0, Advanced 0.
+A **letter suffix** means a sibling at the same rung, not a step up: `01b` is a
+second Medium for extra reps on a pattern that did not stick the first time. It
+fills no new slot, so it does not move the count below.
+
+**Filled: 20 / 72 slots (28%)**, holding **21 problems**. By rung: `01` **20/20 — the Medium tier is complete**, `02` 0/26, `03` 0/26.
+By difficulty label: Medium 18, Medium–Hard 3, Hard 0, Advanced 0.
 
 > ⚠️ The entire Hard and Advanced half of the ladder is empty. Everything so
 > far sits on the bottom rung.
@@ -174,7 +179,7 @@ Medium tier: **20 patterns, 20 done — complete.** Next rung up is `02` (Hard),
 | --- | --- | --- | --- |
 | `backtracking-pruning` | n/a | — | — |
 | `greedy-exchange-argument` | ✅ [batch-queue-order](problems/greedy-exchange-argument/01-batch-queue-order/PROBLEM.md) | — | — |
-| `bit-manipulation` | ✅ [cidr-aggregation](problems/bit-manipulation/01-cidr-aggregation/PROBLEM.md) | — | — |
+| `bit-manipulation` | ✅ [cidr-aggregation](problems/bit-manipulation/01-cidr-aggregation/PROBLEM.md)<br>✅ [extent-cover](problems/bit-manipulation/01b-extent-cover/PROBLEM.md) *(`01b`)* | — | — |
 | `reservoir-sampling` | n/a | — | — |
 
 ### Overlap notes
@@ -212,9 +217,11 @@ not work — ✅ also appears in prose on this page):
 
 ```bash
 diff <(ls MANIFESTS/ | sed 's/\.md$//' | sort) \
-     <(grep -o 'problems/[a-z0-9-]*/[0-9][0-9]-[a-z0-9-]*/PROBLEM.md' INDEX.md \
+     <(grep -o 'problems/[a-z0-9-]*/[0-9][0-9][a-z]*-[a-z0-9-]*/PROBLEM.md' INDEX.md \
        | sed 's|problems/||; s|/PROBLEM.md||; s|/|-|' | sort -u) \
   && echo "OK: INDEX.md and MANIFESTS/ agree"
 ```
 
-Currently clean: 20 linked problems, 20 manifests, no difference.
+(The `[a-z]*` after the digits is what picks up sibling rungs like `01b`.)
+
+Currently clean: 21 linked problems, 21 manifests, no difference.
