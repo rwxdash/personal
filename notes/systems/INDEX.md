@@ -57,6 +57,36 @@ practising the same argument five times.
 
 *Status is yours to fill in: `not started` / `round N` / `graded — <level>`.*
 
+## Take-home problems (06–09)
+
+A **different interview format**: a two-sentence async prompt, then a
+45-minute live session where you *extend* what you brought. Read
+**[TAKEHOME-FORMAT.md](TAKEHOME-FORMAT.md) before starting any of them** —
+the format rewards different preparation, and the main trap is bringing
+something polished that you cannot edit live.
+
+06 and 07 use **real prompts, verbatim**, from a PaaS company's infra
+hiring loop. 08 and 09 are written in the same shape for two of their other
+openings. All four are set in the same imagined platform, so they compose —
+07's scheduler consumes 08's placement constraints, and both depend on 09's
+failure-domain model.
+
+| ID | Prompt | Difficulty | Core tension | Status |
+| --- | --- | --- | --- | --- |
+| [06-observability-engine](problems/06-observability-engine/BRIEF.md) | *"Design the engine for managing observability"* | Staff | Live tail, indexed search, and unbounded untrusted volume want incompatible things — and the volume is set by the customer | |
+| [07-container-provisioning](problems/07-container-provisioning/BRIEF.md) | *"Architect a Container Provisioning Engine"* | Staff | Cold start, density, and isolation are hostile to each other — and stateful workloads destroy the placement freedom density needs | |
+| [08-stateful-storage-engine](problems/08-stateful-storage-engine/BRIEF.md) | *"Design the engine that provides durable storage"* | Staff+ | Durability, performance, cost, placement freedom — four corners, you get two | |
+| [09-baremetal-fleet-engine](problems/09-baremetal-fleet-engine/BRIEF.md) | *"Turn racks into schedulable capacity"* | Staff+ | Commit capital 4–5 months before you know if you need it; both errors are expensive in different currencies | |
+
+**Roles these map to:** Observability (06), Platform / Compute /
+Orchestration (07), Storage (08), Baremetal Orchestration / Datacenters
+(09).
+
+Reference numbers in these briefs are plausible for a platform of that
+shape. They are **not** any real company's published figures — say so if you
+use them, and do your own research on the actual company before an
+interview.
+
 ### What each one is for
 
 | # | If you want to practise | It will punish you for |
@@ -66,6 +96,10 @@ practising the same argument five times.
 | 03 | CAP made monetary; hot keys; admission control | Designing for correctness your inputs can't support; sizing a database for load you must reject |
 | 04 | Cost modelling as a design constraint; hostile multi-tenancy | Using the p50 as the mean; not noticing the requirements don't compose |
 | 05 | Bitemporal modelling; immutability; cross-shard invariants | Storing balances as mutable state; one timestamp per entry |
+| 06 | Scoping a prompt that gave you nothing; log pipelines at volume | Not establishing scale; one pipeline for tail and search |
+| 07 | Latency budgets; density vs isolation; scheduling constraints | Not budgeting the wake path; treating stateful like stateless |
+| 08 | Failure arithmetic driving a design; durability tiers | Asserting durability instead of deriving it; backups you've never restored |
+| 09 | Capacity under lead time; fleet lifecycle | Designing the pipeline instead of the decision; no forecast-error cost |
 
 ## Progress
 
