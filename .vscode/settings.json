@@ -1,0 +1,33 @@
+{
+  // rust-analyzer searches the opened folder for a Cargo.toml and finds none,
+  // because the Rust code lives several levels down in per-problem crates.
+  // Point it at the workspace that ties those crates together instead.
+  //
+  // The workspace uses a glob for its members, so new problems are picked up
+  // automatically — this path never needs to change.
+  "rust-analyzer.linkedProjects": ["notes/dsas/Cargo.toml"],
+
+  // Check only the crate you have open, not all 20. Unsolved problems have
+  // `todo!()` bodies, which compile fine but leave every parameter unused —
+  // about 70 warnings from problems you are not working on. The crates are
+  // independent, so there is nothing to gain from checking them together.
+  "rust-analyzer.check.workspace": false,
+  "rust-analyzer.check.command": "clippy",
+
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.formatOnSave": true
+  },
+
+  // The shared build directory is large and changes constantly; keeping it out
+  // of search and the file watcher keeps the editor responsive.
+  "files.watcherExclude": {
+    "**/target/**": true
+  },
+  "search.exclude": {
+    "**/target/**": true
+  },
+  "files.exclude": {
+    "**/.DS_Store": true
+  }
+}
